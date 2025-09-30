@@ -1,0 +1,13 @@
+services:
+  express-app:
+    build:
+      context: app
+    container_name: express_lab
+    ports:
+      - "8000:8000"
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 3s
+      timeout: 3s
+      retries: 3
