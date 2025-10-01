@@ -1,13 +1,82 @@
 services:
-  express-app:
+  # ------------------------------
+  # Healthcheck & depends_on
+  # ------------------------------
+  healthy-app:
     build:
       context: app
-    container_name: express_lab
+    container_name: healthy_app
+    environment:
+      - PORT=8000
     ports:
       - "8000:8000"
-    restart: on-failure
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 3s
       timeout: 3s
       retries: 3
+
+  unhealthy-app:
+    build:
+      context: app
+    container_name: unhealthy_app
+    environment:
+      - PORT=8001
+    ports:
+      - "8001:8001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/unhealthy"]
+      interval: 3s
+      timeout: 3s
+      retries: 3
+
+  hello-healthy:
+    image: hello-world
+    depends_on:
+      healthy-app:
+        condition: service_healthy
+
+  hello-unhealthy:
+    image: hello-world
+    depends_on:
+      unhealthy-app:
+        condition: service_healthy
+
+  # ------------------------------
+  # Restart policy with Exit code 1 and Exit code 0
+  # ------------------------------
+  app-no-restart:
+    build: app
+    container_name: app_no_restart
+    environment:
+      - PORT=8002
+    ports:
+      - "8002:8002"
+    restart: no
+
+  app-always:
+    build: app
+    container_name: app_always
+    environment:
+      - PORT=8003
+    ports:
+      - "8003:8003"
+    restart: always
+
+  app-on-failure:
+    build: app
+    container_name: app_on_failure
+    environment:
+      - PORT=8004
+    ports:
+      - "8004:8004"
+    restart: on-failure:2
+
+  app-unless-stopped:
+    build: app
+    container_name: app_unless_stopped
+    environment:
+      - PORT=8005
+    ports:
+      - "8005:8005"
+    restart: unless-stopped
