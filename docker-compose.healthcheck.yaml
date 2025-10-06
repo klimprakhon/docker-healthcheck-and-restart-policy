@@ -3,8 +3,8 @@ services:
   # Healthcheck & depends_on
   # ------------------------------
   healthy-app:
-    build:
-      context: app
+    build: app
+    image: healthy-app:0.0.1
     container_name: healthy_app
     environment:
       - PORT=8000
@@ -17,8 +17,8 @@ services:
       retries: 3
 
   unhealthy-app:
-    build:
-      context: app
+    build: app
+    image: unhealthy-app:0.0.1
     container_name: unhealthy_app
     environment:
       - PORT=8001
@@ -41,42 +41,3 @@ services:
     depends_on:
       unhealthy-app:
         condition: service_healthy
-
-  # ------------------------------
-  # Restart policy with Exit code 1 and Exit code 0
-  # ------------------------------
-  app-no-restart:
-    build: app
-    container_name: app_no_restart
-    environment:
-      - PORT=8002
-    ports:
-      - "8002:8002"
-    restart: no
-
-  app-always:
-    build: app
-    container_name: app_always
-    environment:
-      - PORT=8003
-    ports:
-      - "8003:8003"
-    restart: always
-
-  app-on-failure:
-    build: app
-    container_name: app_on_failure
-    environment:
-      - PORT=8004
-    ports:
-      - "8004:8004"
-    restart: on-failure:2
-
-  app-unless-stopped:
-    build: app
-    container_name: app_unless_stopped
-    environment:
-      - PORT=8005
-    ports:
-      - "8005:8005"
-    restart: unless-stopped

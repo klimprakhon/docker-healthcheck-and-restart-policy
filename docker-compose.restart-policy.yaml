@@ -1,0 +1,43 @@
+services:
+  # ------------------------------
+  # Restart policy with Exit code 1 and Exit code 0
+  # ------------------------------
+  app-no-restart:
+    build: app
+    image: app-no-restart:0.0.1
+    container_name: app_no_restart
+    environment:
+      - PORT=8002
+    ports:
+      - "8002:8002"
+    restart: no
+
+  app-always:
+    build: app
+    image: app-always:0.0.1
+    container_name: app_always
+    environment:
+      - PORT=8003
+    ports:
+      - "8003:8003"
+    restart: always
+
+  app-on-failure:
+    build: app
+    image: app-on-failure:0.0.1
+    container_name: app_on_failure
+    environment:
+      - PORT=8004
+    ports:
+      - "8004:8004"
+    restart: on-failure:2
+
+  app-unless-stopped:
+    build: app
+    image: app-unless-stopped:0.0.1
+    container_name: app_unless_stopped
+    environment:
+      - PORT=8005
+    ports:
+      - "8005:8005"
+    restart: unless-stopped
